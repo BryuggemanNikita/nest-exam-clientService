@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -6,6 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
+import { APP_FILTER } from '@nestjs/core';
+import { OtherExceptionFilter } from './common/filters/all-exceptions.filter';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
     imports: [
@@ -21,11 +25,41 @@ import { RolesModule } from './roles/roles.module';
             synchronize: true,
             logging: true,
         }),
+        WinstonModule.forRoot({
+          format: winston.format.combine(
+              winston.format.timestamp(),
+              winston.format.json(),
+          ),
+          transports: [
+              new winston.transports.Console(),
+              new winston.transports.File({
+                  dirname: __dirname + './../log/debug/',
+                  filename: 'debug.log',
+                  level: 'debug',
+              }),
+              new winston.transports.File({
+                  dirname: __dirname + './../log/info/',
+                  filename: 'info.log',
+                  level: 'info',
+              }),
+              new winston.transports.File({
+                  dirname: __dirname + './../log/other/',
+                  filename: 'warn.log',
+                  level: 'warn',
+              }),
+          ],
+      }),
         UsersModule,
         RolesModule,
         AuthModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_FILTER,
+            useClass: OtherExceptionFilter,
+        },
+    ],
 })
-export class AppModule {}
+export class AppModule { }
