@@ -10,7 +10,7 @@ export class AuthService {
     private readonly SALT = 9;
     constructor(private readonly usersService: UsersService) {}
 
-    async register(createUserDto: CreateUserDto) {
+    async register(createUserDto: CreateUserDto): Promise<IUser> {
         const candidat = await this.usersService.findByEmail(
             createUserDto.email,
         );
@@ -34,9 +34,9 @@ export class AuthService {
         return user;
     }
 
-    async login(loginUserDto: LoginUserDto) {
+    async login(loginUserDto: LoginUserDto): Promise<IUser> {
         const user = await this.validateUser({ ...loginUserDto });
-        return !!user;
+        return user;
     }
 
     async validateUser(loginUserDto: LoginUserDto): Promise<IUser> {
@@ -57,7 +57,7 @@ export class AuthService {
         return user;
     }
 
-    logout() {
+    logout(): void {
         return;
     }
 }

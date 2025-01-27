@@ -10,7 +10,7 @@ export class RolesService {
     constructor(
         @InjectRepository(Role)
         private readonly rolesRepository: Repository<Role>,
-    ) {}
+    ) { }
 
     async create(createRoleDto: CreateRoleDto): Promise<Role> {
         const role = this.rolesRepository.create(createRoleDto);
@@ -31,7 +31,8 @@ export class RolesService {
 
     async remove(key: string): Promise<void> {
         const removeRes = await this.rolesRepository.delete({ key });
-        if (removeRes.affected === 0)
-            throw new NotFoundException(`Role with key: ${key} is not found`);
+        if (removeRes.affected === 0) {
+            throw new NotFoundException(`Role with key: ${key} is not found`)
+        }
     }
 }
