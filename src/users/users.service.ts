@@ -13,14 +13,14 @@ export class UsersService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly rolesService: RolesService
-    ) {}
+    ) { }
 
     async create(createUserDto: CreateUserDto): Promise<IUser> {
         const user: IUser = this.userRepository.create(createUserDto);
         const userRole = await this.rolesService.findByKey('USER');
         user.roles = [userRole]
         console.log(user);
-        
+
         return await this.userRepository.save(user);
     }
 
@@ -40,16 +40,8 @@ export class UsersService {
 
     async findByEmail(email: string): Promise<IUser> {
         const user = await this.userRepository
-            .findOne({ where: { email: email } })
-            .catch(() => {
-                throw new HttpException(
-                    {
-                        message: `User with email:${email} not found`,
-                        satusCode: 404,
-                    },
-                    HttpStatus.NOT_FOUND,
-                );
-            });
+            .findOne({ where: { email: email }, relations: { roles: true } })
+
         return user;
     }
 

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -9,6 +9,7 @@ import { RolesModule } from './roles/roles.module';
 import { APP_FILTER } from '@nestjs/core';
 import { OtherExceptionFilter } from './common/filters/all-exceptions.filter';
 import { WinstonModule } from 'nest-winston';
+import { MailModule } from './mail/mail.module';
 import * as winston from 'winston';
 
 @Module({
@@ -16,6 +17,7 @@ import * as winston from 'winston';
         ConfigModule.forRoot({ envFilePath: `.${process.env.NODE_ENV}.env` }),
         TypeOrmModule.forRoot({
             type: 'postgres',
+            schema: 'users',
             host: process.env.POSTGRES_HOST,
             port: Number(process.env.POSTGRES_PORT),
             username: process.env.POSTGRES_USER,

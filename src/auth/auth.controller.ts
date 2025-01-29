@@ -30,7 +30,7 @@ export class AuthController {
     }
 
     @ApiOperation({ summary: 'Логинизация пользователя' })
-    @ApiResponse({ status: 200, type: User })
+    @ApiResponse({ status: 200, example:'' })
     @HttpCode(200)
     @Post('login')
     @UseInterceptors(ResHeaderTransformerInterceptor)
