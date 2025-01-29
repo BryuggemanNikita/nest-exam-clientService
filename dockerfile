@@ -1,13 +1,13 @@
-FROM node:20.16-alpine 
+FROM node:20.16-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production
+RUN npm install
 
 COPY . .
 
-RUN npm run build
+COPY ./dist ./dist
 
 CMD ["npm", "run", "start"]
